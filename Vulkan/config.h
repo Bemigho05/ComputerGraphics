@@ -1,0 +1,13 @@
+#pragma once
+#define _CRT_SECURE_NO_WARNINGS
+#include <vulkan/vulkan.hpp>
+#include <memory>
+#include <iostream>
+#include <set>
+#include <optional>
+#include <fstream>
+#include <sstream>
+#include <queue>
+#include <iomanip>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
