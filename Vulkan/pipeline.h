@@ -2,6 +2,7 @@
 #include "config.h"
 #include "shaders.h"
 #include "render_structs.h"
+#include "mesh.h"
 
 namespace vkInit {
 	struct GraphicsPipelineInBundle {
@@ -75,17 +76,20 @@ namespace vkInit {
 		catch (vk::SystemError err) { if (debug) std::cerr << "Failed to create renderpass!" << std::endl; }
 	}
 
-	GraphicsPipelineOutBundle make_graphics_pipeline(const GraphicsPipelineInBundle& specification, const bool debug = false) {
+	GraphicsPipelineOutBundle create_graphics_pipeline(const GraphicsPipelineInBundle& specification, const bool debug = false) {
 		vk::GraphicsPipelineCreateInfo pipelineInfo = {};
 		pipelineInfo.flags = vk::PipelineCreateFlags();
 		
 
 		std::vector<vk::PipelineShaderStageCreateInfo> shaderStages;
 
-		
+		auto bindingDescription = vkMesh::getPosColorBindingDescription();
+		auto attributeDescriptions = vkMesh::getPosColorAttributeDescriptions();
 		vk::PipelineVertexInputStateCreateInfo vertexInputInfo = {};
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
+		vertexInputInfo.vertexAttributeDescriptionCount = 2;
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 
 		vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo = {};

@@ -5,6 +5,7 @@
 #include "config.h"
 #include "frame.h"
 #include "scene.h"
+#include "vertex_managerie.h"
 
 
 
@@ -55,7 +56,10 @@ private:
 	uint32_t maxFramesInFlight, frameNumber;
 	uint32_t imageIndex;
 
+	VertexManagerie* meshes;
 
+	
+	
 	void create_instance();
 	void create_device();
 	void create_swapchain();
@@ -64,6 +68,8 @@ private:
 	void finalize_setup();
 	void create_framebuffers();
 	void create_frame_sync_objects();
+	void create_assets();
+	void prepare_scene(vk::CommandBuffer commandBuffer);
 
 	void record_draw_commands(vk::CommandBuffer commandBUffer, uint32_t imageIndex, std::shared_ptr<Scene> scene);
 	void cleanup_swapchain();

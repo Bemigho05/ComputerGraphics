@@ -9,5 +9,13 @@
 #include <sstream>
 #include <queue>
 #include <iomanip>
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+
+enum class meshTypes {
+	TRIANGLE,
+	SQUARE,
+	STAR
+};

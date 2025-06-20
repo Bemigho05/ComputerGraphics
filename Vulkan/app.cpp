@@ -14,7 +14,7 @@ void App::build_glfw_window(const int& width, const int& height, const bool& deb
 	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	// glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 	window.reset(glfwCreateWindow(width, height, "VULKAN ENGINE", nullptr, nullptr), destroyGLFWwidow); 
 	// window.reset(glfwCreateWindow(width, height, "VULKAN ENGINE", nullptr, nullptr));

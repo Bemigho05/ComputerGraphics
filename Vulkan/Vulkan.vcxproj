@@ -136,6 +136,8 @@
     <ClInclude Include="framebuffer.h" />
     <ClInclude Include="instance.h" />
     <ClInclude Include="logging.h" />
+    <ClInclude Include="memory.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="pipeline.h" />
     <ClInclude Include="queue_families.h" />
     <ClInclude Include="render_structs.h" />
@@ -143,13 +145,16 @@
     <ClInclude Include="shaders.h" />
     <ClInclude Include="swapchain.h" />
     <ClInclude Include="sync.h" />
+    <ClInclude Include="vertex_managerie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="app.h" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="memory.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="vertex_managerie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
