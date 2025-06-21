@@ -135,7 +135,7 @@ void Engine::create_frame_sync_objects()
 
 void Engine::create_assets()
 {
-	meshes = new VertexManagerie();
+	meshes = std::make_unique<VertexManagerie>();
 	std::vector<float> vertices = { {
 		 0.0f, -0.05f, 0.0f, 1.0f, 0.0f,
 		 0.05f, 0.05f, 0.0f, 1.0f, 0.0f,
@@ -184,7 +184,14 @@ void Engine::create_assets()
 	type = meshTypes::STAR;
 	meshes->consume(type, vertices);
 
-	meshes->finalize(device, physicalDevice);
+	FinalizationChunk finalizeInput;
+	finalizeInput.device = device;
+	finalizeInput.commandBuffer = mainCommandBuffer;
+	finalizeInput.physicalDevice = physicalDevice;
+	finalizeInput.queue = graphicsQueue;
+	
+
+	meshes->finalize(finalizeInput);
 }
 
 void Engine::prepare_scene(vk::CommandBuffer commandBuffer)
@@ -209,7 +216,7 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 	renderPassInfo.renderArea.offset.x = 0;
 	renderPassInfo.renderArea.offset.y = 0;
 	renderPassInfo.renderArea.extent = swapchainExtent;
-	vk::ClearValue clearColor = { std::array<float, 4> {1.0f, 0.5f, 0.25, 1.0f} };
+	vk::ClearValue clearColor = { std::array<float, 4> {.0f, .0f, .0f, 1.0f} };
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
@@ -280,7 +287,10 @@ Engine::~Engine() {
 	if (debugMode) { std::cout << "Goodbye see you!\n"; }
 
 	if (!device) std::cerr << "Device is destroyed!\n";
-	delete meshes;
+	// delete meshes;
+
+	device.destroyBuffer(meshes->vertexBuffer.buffer);
+	device.freeMemory(meshes->vertexBuffer.bufferMemory);
 	
 	device.destroyCommandPool(commandPool);
 

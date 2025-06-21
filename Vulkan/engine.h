@@ -56,7 +56,7 @@ private:
 	uint32_t maxFramesInFlight, frameNumber;
 	uint32_t imageIndex;
 
-	VertexManagerie* meshes;
+	std::unique_ptr<VertexManagerie> meshes;
 
 	
 	

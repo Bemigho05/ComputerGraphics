@@ -3,13 +3,20 @@
 #include "memory.h"
 
 
+struct FinalizationChunk {
+	vk::Device device;
+	vk::PhysicalDevice physicalDevice;
+	vk::Queue queue;
+	vk::CommandBuffer commandBuffer;
+};
+
 class VertexManagerie {
 public:
 	VertexManagerie();
-	~VertexManagerie();
+	~VertexManagerie() = default;
 
 	void consume(meshTypes type, std::vector<float> vertexData);
-	void finalize(vk::Device device, vk::PhysicalDevice physicalDevice);
+	void finalize(FinalizationChunk finalizationChunk);
 	vkUtil::Buffer vertexBuffer;
 
 	std::unordered_map<meshTypes, int> offsets;

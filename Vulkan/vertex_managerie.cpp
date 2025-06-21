@@ -5,11 +5,6 @@ VertexManagerie::VertexManagerie()
 	offset = 0;
 }
 
-VertexManagerie::~VertexManagerie()
-{
-	logicalDevice.destroyBuffer(vertexBuffer.buffer);
-	logicalDevice.freeMemory(vertexBuffer.bufferMemory);
-}
 
 void VertexManagerie::consume(meshTypes type, std::vector<float> vertexData)
 {
@@ -25,20 +20,30 @@ void VertexManagerie::consume(meshTypes type, std::vector<float> vertexData)
 }
 
 
-void VertexManagerie::finalize(vk::Device device, vk::PhysicalDevice physicalDevice)
+void VertexManagerie::finalize(FinalizationChunk finalizeInput)
 {
-	this->logicalDevice = logicalDevice;
+	logicalDevice = finalizeInput.device;
 
 	vkUtil::BufferInput inputChunk;
-	inputChunk.device = device;
-	inputChunk.physicalDevice = physicalDevice;
+	inputChunk.device = finalizeInput.device;
+	inputChunk.physicalDevice = finalizeInput.physicalDevice;
 	inputChunk.size = sizeof(float) * lump.size();
-	inputChunk.usage = vk::BufferUsageFlagBits::eVertexBuffer;
+	inputChunk.usage = vk::BufferUsageFlagBits::eTransferSrc;
+	inputChunk.memoryProperties = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent;
+	vkUtil::Buffer stagingBuffer = vkUtil::createBuffer(inputChunk);
 
+	auto memoryLocation = finalizeInput.device.mapMemory(stagingBuffer.bufferMemory, 0, inputChunk.size);
+	memcpy(memoryLocation, lump.data(), inputChunk.size);
+	finalizeInput.device.unmapMemory(stagingBuffer.bufferMemory);
+
+	inputChunk.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
+	inputChunk.memoryProperties = vk::MemoryPropertyFlagBits::eDeviceLocal;
 	vertexBuffer = vkUtil::createBuffer(inputChunk);
 
+	vkUtil::copyBuffer(stagingBuffer, vertexBuffer, inputChunk.size, finalizeInput.queue, finalizeInput.commandBuffer);
 
-	auto memoryLocation = device.mapMemory(vertexBuffer.bufferMemory, 0, inputChunk.size);
-	memcpy(memoryLocation, lump.data(), inputChunk.size);
-	device.unmapMemory(vertexBuffer.bufferMemory);
+
+	logicalDevice.destroyBuffer(stagingBuffer.buffer);
+	logicalDevice.freeMemory(stagingBuffer.bufferMemory);
+
 }

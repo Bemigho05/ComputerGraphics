@@ -1,6 +1,6 @@
 #include "app.h"
 
-static auto destroyGLFWwidow = [](GLFWwindow* window) {
+static auto destroyGLFWwidow = [](GLFWwindow* window) noexcept {
 	if (window) {
 		glfwDestroyWindow(window);
 #ifndef NDEBUG

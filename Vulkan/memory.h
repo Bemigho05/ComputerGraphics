@@ -7,6 +7,7 @@ namespace vkUtil {
 		vk::BufferUsageFlags usage;
 		vk::Device device;
 		vk::PhysicalDevice physicalDevice;
+		vk::MemoryPropertyFlags memoryProperties;
 	};
 	struct Buffer {
 		vk::Buffer buffer;
@@ -18,5 +19,7 @@ namespace vkUtil {
 	void allocateBufferMemory(Buffer& buffer, const BufferInput& input);
 
 	Buffer createBuffer(BufferInput& input);
+
+	void copyBuffer(Buffer& srcBuffer, Buffer& dstBuffer, vk::DeviceSize size, vk::Queue queue, vk::CommandBuffer commandBuffer);
 
 }
