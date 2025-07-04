@@ -2,7 +2,7 @@
 #include "config.h"
 
 namespace vkInit {
-	vk::Semaphore make_semaphore(vk::Device device, bool debug) {
+	vk::Semaphore make_semaphore(vk::Device device) {
 		vk::SemaphoreCreateInfo semaphoreInfo = {};
 		semaphoreInfo.flags = vk::SemaphoreCreateFlags();
 
@@ -10,13 +10,15 @@ namespace vkInit {
 			return device.createSemaphore(semaphoreInfo);
 		}
 		catch (vk::SystemError err) {
-			if (debug) std::cerr << "Failed to create semaphore" << std::endl;
+#ifndef NDEBUG
+			std::cerr << "Failed to create semaphore" << std::endl;
+#endif // !NDEBUG
 		}
 
 		return nullptr;
 	}
 
-	vk::Fence make_fence(vk::Device device, bool debug) {
+	vk::Fence make_fence(vk::Device device) {
 		vk::FenceCreateInfo fenceInfo = {};
 		fenceInfo.flags = vk::FenceCreateFlags() | vk::FenceCreateFlagBits::eSignaled;
 
@@ -24,9 +26,10 @@ namespace vkInit {
 			return device.createFence(fenceInfo);
 		}
 		catch (vk::SystemError err) {
-			if (debug) std::cerr << "Failed to create fence" << std::endl;
+#ifndef NDEBUG
+			std::cerr << "Failed to create fence" << std::endl;
+#endif
 		}
-		
 
 		return nullptr;
 	}

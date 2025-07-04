@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -19,61 +15,86 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{206cd1ba-bfba-49bc-9b3c-3c794377498b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vkInit">
+      <UniqueIdentifier>{01adf88a-c095-41d4-949e-09d157b39ceb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkUtil">
+      <UniqueIdentifier>{c0b699dd-c215-43ba-905c-74c80df1bf42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkImage">
+      <UniqueIdentifier>{0b84b24c-52a8-4a4e-8ae7-baaad22d9d6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="control">
+      <UniqueIdentifier>{1fa7111d-2a5c-47e9-9daa-68645f9d320b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="instance.h">
-      <Filter>Header Files</Filter>
+      <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="logging.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="device.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swapchain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="queue_families.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="frame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="framebuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="commands.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sync.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="render_structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Header Files</Filter>
+      <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="shaders.h">
+      <Filter>vkUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="image.h">
+      <Filter>vkImage</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="memory.h">
+      <Filter>vkUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="descriptor.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="single_time_commands.h">
+      <Filter>vkUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="commands.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="device.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="framebuffer.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="instance.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="swapchain.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="sync.h">
+      <Filter>vkInit</Filter>
+    </ClInclude>
+    <ClInclude Include="logging.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="frame.h">
+      <Filter>vkUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="queue_families.h">
+      <Filter>vkUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="render_structs.h">
+      <Filter>model</Filter>
+    </ClInclude>
     <ClInclude Include="vertex_managerie.h">
-      <Filter>Header Files</Filter>
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,20 +104,47 @@
     <ClCompile Include="scene.cpp">
       <Filter>model</Filter>
     </ClCompile>
-    <ClCompile Include="app.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="app.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="image.cpp">
+      <Filter>vkImage</Filter>
+    </ClCompile>
+    <ClCompile Include="pipeline.cpp">
+      <Filter>vkInit</Filter>
     </ClCompile>
     <ClCompile Include="memory.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>vkUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="single_time_commands.cpp">
+      <Filter>vkUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="queue_families.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="descriptor.cpp">
+      <Filter>vkInit</Filter>
+    </ClCompile>
+    <ClCompile Include="swapchain.cpp">
+      <Filter>vkInit</Filter>
+    </ClCompile>
+    <ClCompile Include="device.cpp">
+      <Filter>vkInit</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="app.h">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="logging.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="frame.cpp">
+      <Filter>vkUtil</Filter>
     </ClCompile>
     <ClCompile Include="vertex_managerie.cpp">
-      <Filter>main</Filter>
+      <Filter>model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

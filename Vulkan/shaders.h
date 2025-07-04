@@ -2,10 +2,12 @@
 #include "config.h"
 
 namespace vkUtil {
-	std::vector<char> readFile(const std::string& filename, const bool debug) {
+	std::vector<char> readFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-		if (debug && !file.is_open()) { std::cerr << "Failed to load\"" << filename << "\"" << std::endl; }
+#ifndef NDEBUG
+		if (!file.is_open()) { std::cerr << "Failed to load\"" << filename << "\"" << std::endl; }
+#endif
 		size_t filesize(static_cast<size_t>(file.tellg()));
 
 		std::vector<char> buffer(filesize);
@@ -15,8 +17,8 @@ namespace vkUtil {
 		return buffer;
 	}
 
-	vk::ShaderModule createModule(const std::string& filename, const vk::Device& device, const bool debug) {
-		std::vector<char> sourceCode = readFile(filename, debug);
+	vk::ShaderModule createModule(const std::string& filename, const vk::Device& device) {
+		std::vector<char> sourceCode = readFile(filename);
 		vk::ShaderModuleCreateInfo moduleInfo = {};
 		moduleInfo.flags = vk::ShaderModuleCreateFlags();
 		moduleInfo.codeSize = sourceCode.size();
@@ -25,7 +27,10 @@ namespace vkUtil {
 			return device.createShaderModule(moduleInfo);
 		}
 		catch(vk::SystemError err) {
-			if (debug) { std::cerr << "Failed to create shader module for \"" << filename << "\"" << std::endl; }
+
+#ifndef NDEBUG
+			std::cerr << "Failed to create shader module for \"" << filename << "\"" << std::endl;
+#endif
 		}
 	}
 }

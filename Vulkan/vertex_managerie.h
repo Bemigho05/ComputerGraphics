@@ -13,16 +13,17 @@ struct FinalizationChunk {
 class VertexManagerie {
 public:
 	VertexManagerie();
-	~VertexManagerie() = default;
+	~VertexManagerie();
 
-	void consume(meshTypes type, std::vector<float> vertexData);
+	void consume(meshTypes type, std::vector<float> vertexData, std::vector<uint32_t> indexData);
 	void finalize(FinalizationChunk finalizationChunk);
-	vkUtil::Buffer vertexBuffer;
+	vkUtil::Buffer vertexBuffer, indexBuffer;
 
-	std::unordered_map<meshTypes, int> offsets;
-	std::unordered_map<meshTypes, int> sizes;
+	std::unordered_map<meshTypes, int> firstIndices;
+	std::unordered_map<meshTypes, int> indexCounts;
 private:
-	int offset;
-	vk::Device logicalDevice;
-	std::vector<float> lump;
+	int indexOffset;
+	vk::Device device;
+	std::vector<float> vertexLump;
+	std::vector<uint32_t> indexLump;
 };

@@ -10,7 +10,7 @@ namespace vkInit {
 	};
 
 	vk::CommandPool make_command_pool(vk::Device device, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, const bool debug = false) {
-		auto queueFamilyIndices = vkUtil::findQueueFamilies(physicalDevice, surface, debug);
+		auto queueFamilyIndices = vkUtil::findQueueFamilies(physicalDevice, surface);
 
 		vk::CommandPoolCreateInfo poolInfo = {};
 		poolInfo.flags = vk::CommandPoolCreateFlags() | vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
@@ -27,7 +27,7 @@ namespace vkInit {
 		
 	}
 
-	vk::CommandBuffer make_command_buffer(commandBufferInputChunk inputChunk, bool debug) {
+	vk::CommandBuffer make_command_buffer(commandBufferInputChunk inputChunk) {
 		vk::CommandBufferAllocateInfo allocInfo = {};
 		allocInfo.commandPool = inputChunk.commandPool;
 		allocInfo.level = vk::CommandBufferLevel::ePrimary;
@@ -35,18 +35,22 @@ namespace vkInit {
 
 		try {
 			auto commandBuffer = inputChunk.device.allocateCommandBuffers(allocInfo).at(0);
-			if (debug) std::cout << "Allocated main command buffer " << std::endl;
-
+#ifndef NDEBUG
+				std::cout << "Allocated main command buffer " << std::endl;
+#endif // !NDEBUG
 			return commandBuffer;
 		}
 		catch (vk::SystemError err) {
-			if (debug) std::cerr << "Failed to allocate command buffers for frame " << std::endl;
+
+#ifndef  NDEBUG
+			std::cerr << "Failed to allocate command buffers for frame " << std::endl;
+#endif // ! NDEBUG
 		}
 
 		return nullptr;
 	}
 
-	void make_frame_command_buffers(commandBufferInputChunk inputChunk, bool debug) {
+	void create_frame_command_buffers(commandBufferInputChunk inputChunk) {
 		vk::CommandBufferAllocateInfo allocInfo = {};
 		allocInfo.commandPool = inputChunk.commandPool;
 		allocInfo.level = vk::CommandBufferLevel::ePrimary;
@@ -57,12 +61,17 @@ namespace vkInit {
 		for (auto& frame : inputChunk.frames) {
 			try {
 				frame.commandBuffer = inputChunk.device.allocateCommandBuffers(allocInfo).at(0);
-				if (debug) std::cout << "Allocated command buffer for frame " << i << std::endl;
+#ifndef NDEBUG
+				std::cout << "Allocated command buffer for frame " << i << std::endl;
+#endif // !NDEBUG
+
 			}
 			catch (vk::SystemError err) {
-				if (debug) std::cerr << "Failed to allocated command buffer for frame " << i << std::endl;
-			}
+#ifndef NDEBUG
+				std::cerr << "Failed to allocated command buffer for frame " << i << std::endl;
+#endif // !NDEBUG
 
+			}
 			i++;
 		}
 	}
