@@ -199,9 +199,9 @@ void Engine::create_assets()
 	meshes = std::make_unique<VertexManagerie>();
 
 	std::vector<float> vertices = { {
-		 0.0f, -0.1f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, //0
-		 0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, //1
-		-0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f  //2
+		 0.0f, -0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, //0
+		 0.1f,  0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, //1
+		-0.1f,  0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f  //2
 	} };
 	std::vector<uint32_t> indices = { {
 			0, 1, 2
@@ -210,10 +210,10 @@ void Engine::create_assets()
 	meshes->consume(type, vertices, indices);
 	
 	vertices = { {
-		-0.1f,  0.1f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //0
-		-0.1f, -0.1f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //1
-		 0.1f, -0.1f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //2
-		 0.1f,  0.1f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, //3
+		-0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //0
+		-0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //1
+		 0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //2
+		 0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, //3
 	} };
 	indices = { {
 			0, 1, 2,
@@ -223,16 +223,16 @@ void Engine::create_assets()
 	meshes->consume(type, vertices, indices);
 
 	vertices = { {
-		 -0.1f, -0.05f, 1.0f, 1.0f, 1.0f, 0.0f, 0.25f, //0
-		-0.04f, -0.05f, 1.0f, 1.0f, 1.0f, 0.3f, 0.25f, //1
-		-0.06f,   0.0f, 1.0f, 1.0f, 1.0f, 0.2f,  0.5f, //2
-		  0.0f,  -0.1f, 1.0f, 1.0f, 1.0f, 0.5f,  0.0f, //3
-		 0.04f, -0.05f, 1.0f, 1.0f, 1.0f, 0.7f, 0.25f, //4
-		  0.1f, -0.05f, 1.0f, 1.0f, 1.0f, 1.0f, 0.25f, //5
-		 0.06f,   0.0f, 1.0f, 1.0f, 1.0f, 0.8f,  0.5f, //6
-		 0.08f,   0.1f, 1.0f, 1.0f, 1.0f, 0.9f,  1.0f, //7
-		  0.0f,  0.02f, 1.0f, 1.0f, 1.0f, 0.5f,  0.6f, //8
-		-0.08f,   0.1f, 1.0f, 1.0f, 1.0f, 0.1f,  1.0f  //9
+		 -0.1f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.25f, //0
+		-0.04f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.3f, 0.25f, //1
+		-0.06f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.2f,  0.5f, //2
+		  0.0f,  -0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f,  0.0f, //3
+		 0.04f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.7f, 0.25f, //4
+		  0.1f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.25f, //5
+		 0.06f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.8f,  0.5f, //6
+		 0.08f,   0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.9f,  1.0f, //7
+		  0.0f,  0.02f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f,  0.6f, //8
+		-0.08f,   0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.1f,  1.0f  //9
 	} };
 	indices = { {
 			0, 1, 2,
@@ -355,10 +355,10 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 	
 
 	vk::ClearValue colorClear;
-	std::array<float, 4> colors = { 1.0f, 0.5f, 0.25f, 1.0f };
+	std::array<float, 4> colors = { 0.0f, 0.0f, 0.0f, 1.0f };
 	colorClear.color = vk::ClearColorValue(colors);
-	vk::ClearValue depthClear;
 
+	vk::ClearValue depthClear;
 	depthClear.depthStencil = vk::ClearDepthStencilValue({ 1.0f, 0 });
 	std::vector<vk::ClearValue> clearValues = { {colorClear, depthClear} };
 

@@ -17,7 +17,7 @@ VertexManagerie::~VertexManagerie()
 
 void VertexManagerie::consume(meshTypes type, std::vector<float> vertexData, std::vector<uint32_t> indexData)
 {
-	auto vertexCount = static_cast<int>(vertexData.size() / 7);
+	auto vertexCount = static_cast<int>(vertexData.size() / 8);
 	auto indexCount = static_cast<int>(indexData.size());
 	auto lastIndex = static_cast<int>(indexLump.size());
 

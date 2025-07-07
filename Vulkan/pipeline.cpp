@@ -278,7 +278,7 @@ vkInit::GraphicsPipelineOutBundle vkInit::create_graphics_pipeline(const Graphic
 	depthState.flags = vk::PipelineDepthStencilStateCreateFlags();
 	depthState.depthTestEnable = true;
 	depthState.depthWriteEnable = true;
-	depthState.depthCompareOp = vk::CompareOp::eLess; // TODO: play with this
+	depthState.depthCompareOp = vk::CompareOp::eLessOrEqual; // TODO: play with this
 	depthState.depthBoundsTestEnable = false;
 	depthState.stencilTestEnable = false;
 	pipelineInfo.pDepthStencilState = &depthState;

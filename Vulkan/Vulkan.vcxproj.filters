@@ -31,6 +31,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="vkMesh">
+      <UniqueIdentifier>{0e57fd01-8c03-4775-9f1b-393c43fff6ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -94,7 +97,7 @@
       <Filter>model</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
-      <Filter>model</Filter>
+      <Filter>vkMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="vertex_managerie.cpp">
       <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
