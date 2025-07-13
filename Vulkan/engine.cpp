@@ -9,6 +9,7 @@
 #include "sync.h"
 #include "render_structs.h"
 #include "descriptor.h"
+#include "obj_mesh.h"
 
 
 
@@ -197,55 +198,17 @@ void Engine::create_frame_resources()
 void Engine::create_assets()
 {
 	meshes = std::make_unique<VertexManagerie>();
+	// Meshes
+	std::unordered_map<meshTypes, std::vector<const char*>> modelFilenames = {
+		{ meshTypes::GROUND, { "Models/ground.obj", "Models/ground.mtl" } },
+		{ meshTypes::GIRL, { "Models/girl.obj", "Models/girl.mtl" } },
+	};
 
-	std::vector<float> vertices = { {
-		 0.0f, -0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, //0
-		 0.1f,  0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, //1
-		-0.1f,  0.1f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f  //2
-	} };
-	std::vector<uint32_t> indices = { {
-			0, 1, 2
-	} };
-	meshTypes type = meshTypes::TRIANGLE;
-	meshes->consume(type, vertices, indices);
-	
-	vertices = { {
-		-0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //0
-		-0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //1
-		 0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //2
-		 0.1f,  0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, //3
-	} };
-	indices = { {
-			0, 1, 2,
-			2, 3, 0
-	} };
-	type = meshTypes::SQUARE;
-	meshes->consume(type, vertices, indices);
+	for (auto& pair : modelFilenames) {
+		vkMesh::ObjMesh model(pair.second[0], pair.second[1], glm::mat4(1.0f));
+		meshes->consume(pair.first, model.vertices, model.indices);
+	}
 
-	vertices = { {
-		 -0.1f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.25f, //0
-		-0.04f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.3f, 0.25f, //1
-		-0.06f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.2f,  0.5f, //2
-		  0.0f,  -0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f,  0.0f, //3
-		 0.04f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 0.7f, 0.25f, //4
-		  0.1f, -0.05f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.25f, //5
-		 0.06f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.8f,  0.5f, //6
-		 0.08f,   0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.9f,  1.0f, //7
-		  0.0f,  0.02f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f,  0.6f, //8
-		-0.08f,   0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.1f,  1.0f  //9
-	} };
-	indices = { {
-			0, 1, 2,
-			1, 3, 4,
-			2, 1, 4,
-			4, 5, 6,
-			2, 4, 6,
-			6, 7, 8,
-			2, 6, 8,
-			2, 8, 9
-	} };
-	type = meshTypes::STAR;
-	meshes->consume(type, vertices, indices);
 
 	FinalizationChunk finalizationInfo;
 	finalizationInfo.device = device;
@@ -256,9 +219,8 @@ void Engine::create_assets()
 
 	// Materials
 	std::unordered_map<meshTypes, std::string> filenames = {
-		{meshTypes::TRIANGLE, "textures/face.jpg"},
-		{meshTypes::SQUARE, "textures/haus.jpg"},
-		{meshTypes::STAR, "textures/noroi.png"}
+		{meshTypes::GROUND, "Textures/ground.jpg"},
+		{meshTypes::GIRL, "Textures/none.png"},
 	};
 
 	vkInit::descriptorSetLayoutData bindings;
@@ -293,12 +255,12 @@ void Engine::prepare_frame(uint32_t imageIndex, std::shared_ptr<Scene> scene)
 {
 	auto& frame = swapchainFrames[imageIndex];
 
-	glm::vec3 eye = { 1.0f, 0.0f, -1.0f };
-	glm::vec3 center = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 up = { 0.0f, 0.0f, -1.0f };
+	glm::vec3 eye = { -2.0f, 5.0f, 10.0f };
+	glm::vec3 center = { 10.0f, 0.0f, 0.0f };
+	glm::vec3 up = { 0.0f, 0.0f, 2.0f };
 	glm::mat4 view = glm::lookAt(eye, center, up);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(swapchainExtent.width) / static_cast<float>(swapchainExtent.height), 0.1f, 10.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(swapchainExtent.width) / static_cast<float>(swapchainExtent.height), 0.1f, 100.0f);
 	projection[1][1] *= -1;
 
 	frame.cameraData.view = view;
@@ -308,16 +270,12 @@ void Engine::prepare_frame(uint32_t imageIndex, std::shared_ptr<Scene> scene)
 	memcpy(frame.cameraDataWriteLocation, &(frame.cameraData), sizeof(vkUtil::UBO));
 
 	size_t i = 0;
-	for (const auto& position : scene->trianglePositions) {
-		frame.modelTransforms[i++] = glm::translate(glm::mat4(1.0f), position);
-	}
-	for (const auto& position : scene->squarePositions) {
-		frame.modelTransforms[i++] = glm::translate(glm::mat4(1.0f), position);
-	}
-	for (const auto& position : scene->starPositions) {
-		frame.modelTransforms[i++] = glm::translate(glm::mat4(1.0f), position);
-	}
 
+	for (auto& pair : scene->positions) 
+		for (auto& position : pair.second)
+			frame.modelTransforms[i++] = glm::translate(glm::mat4(1.0f), position);
+		
+	
 	memcpy(frame.modelTransformsWriteLocation, frame.modelTransforms.data(), i * sizeof(glm::mat4));
 
 	frame.write_descriptor_set();
@@ -336,9 +294,7 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 {
 	vk::CommandBufferBeginInfo beginInfo = {};
 
-	try {
-		commandBuffer.begin(beginInfo);
-	}
+	try { commandBuffer.begin(beginInfo); }
 	catch (vk::SystemError err) { if (debugMode) std::cout << "Failed to begin recording command buffer" << std::endl; }
 
 	vk::RenderPassBeginInfo renderPassInfo = {};
@@ -373,15 +329,9 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 	prepare_scene(commandBuffer);
 
 	uint32_t startInstance = 0;
-	uint32_t instanceCount = static_cast<uint32_t>(scene->trianglePositions.size());
-	render_objects(commandBuffer, meshTypes::TRIANGLE, startInstance, instanceCount);
+	for (const auto& pair : scene->positions)
+		render_objects(commandBuffer, pair.first, startInstance, static_cast<uint32_t>(pair.second.size()));
 
-	instanceCount = static_cast<uint32_t>(scene->squarePositions.size());
-	render_objects(commandBuffer, meshTypes::SQUARE, startInstance, instanceCount);
-	
-	instanceCount = static_cast<uint32_t>(scene->starPositions.size());
-	render_objects(commandBuffer, meshTypes::STAR, startInstance, instanceCount);
-	
 	commandBuffer.endRenderPass();
 	try {
 		commandBuffer.end();
@@ -397,7 +347,7 @@ void Engine::cleanup_swapchain()
 
 	device.destroySwapchainKHR(swapchain);
 	device.destroyDescriptorPool(frameDescriptorPool);
-	
+
 }
 
 Engine::~Engine() {

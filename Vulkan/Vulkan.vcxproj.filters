@@ -99,6 +99,9 @@
     <ClInclude Include="mesh.h">
       <Filter>vkMesh</Filter>
     </ClInclude>
+    <ClInclude Include="obj_mesh.h">
+      <Filter>vkMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,9 +124,6 @@
     </ClCompile>
     <ClCompile Include="single_time_commands.cpp">
       <Filter>vkUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="queue_families.cpp">
-      <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="descriptor.cpp">
       <Filter>vkInit</Filter>
@@ -150,6 +150,12 @@
       <Filter>model</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="queue_families.cpp">
+      <Filter>vkUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="obj_mesh.cpp">
       <Filter>main</Filter>
     </ClCompile>
   </ItemGroup>

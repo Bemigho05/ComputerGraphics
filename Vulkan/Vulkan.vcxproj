@@ -119,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +141,7 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="obj_mesh.h" />
     <ClInclude Include="pipeline.h" />
     <ClInclude Include="queue_families.h" />
     <ClInclude Include="render_structs.h" />
@@ -162,6 +164,7 @@
     <ClCompile Include="logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="obj_mesh.cpp" />
     <ClCompile Include="pipeline.cpp" />
     <ClCompile Include="queue_families.cpp" />
     <ClCompile Include="scene.cpp" />

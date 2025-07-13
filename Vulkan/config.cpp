@@ -13,6 +13,7 @@ std::vector<std::string> split(std::string line, std::string delimiter)
 		line.erase(0, pos + delimiter.length());
 
 	}
+	split_line.push_back(line);
 
 	return split_line;
 

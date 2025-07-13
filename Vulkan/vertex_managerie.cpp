@@ -25,11 +25,8 @@ void VertexManagerie::consume(meshTypes type, std::vector<float> vertexData, std
 	firstIndices.insert(std::make_pair(type, lastIndex));
 	indexCounts.insert(std::make_pair(type, indexCount));
 
-	for (auto attribute : vertexData)
-		vertexLump.push_back(attribute);
-
-	for (auto index : indexData)
-		indexLump.push_back(index + indexOffset);
+	for (auto attribute : vertexData) vertexLump.push_back(attribute);
+	for (auto index : indexData) indexLump.push_back(index + indexOffset);
 
 	indexOffset += vertexCount;
 }
@@ -78,5 +75,7 @@ void VertexManagerie::finalize(FinalizationChunk input)
 
 	device.destroyBuffer(stagingBuffer.buffer);
 	device.freeMemory(stagingBuffer.bufferMemory);
+
+	vertexLump.clear();
 
 }
