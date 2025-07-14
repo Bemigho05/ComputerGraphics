@@ -5,7 +5,7 @@ namespace vkMesh {
 	std::vector<vk::VertexInputBindingDescription> getPosColorBindingDescription() {
 		std::vector<vk::VertexInputBindingDescription> bindingDescriptions(1);
 		bindingDescriptions[0].binding = 0;
-		bindingDescriptions[0].stride = 8 * sizeof(float);
+		bindingDescriptions[0].stride = 11 * sizeof(float);
 		bindingDescriptions[0].inputRate = vk::VertexInputRate::eVertex;
 
 		return bindingDescriptions;
@@ -14,7 +14,7 @@ namespace vkMesh {
 	
 	std::vector<vk::VertexInputAttributeDescription> getPosColorAttributeDescriptions() {
 
-		std::vector<vk::VertexInputAttributeDescription> attributes(3);
+		std::vector<vk::VertexInputAttributeDescription> attributes(4);
 
 		// Position
 		attributes[0].binding = 0;
@@ -35,6 +35,12 @@ namespace vkMesh {
 		attributes[2].location = 2;
 		attributes[2].format = vk::Format::eR32G32Sfloat;
 		attributes[2].offset = 6 * sizeof(float);
+
+		// normal
+		attributes[3].binding = 0;
+		attributes[3].location = 3;
+		attributes[3].format = vk::Format::eR32G32B32Sfloat;
+		attributes[3].offset = 8 * sizeof(float);
 
 		return attributes;
 	}
