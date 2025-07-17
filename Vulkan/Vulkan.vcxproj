@@ -164,6 +164,7 @@
     <ClCompile Include="logging.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="obj_mesh.cpp" />
     <ClCompile Include="pipeline.cpp" />
     <ClCompile Include="queue_families.cpp" />

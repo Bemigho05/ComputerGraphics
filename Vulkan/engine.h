@@ -44,9 +44,10 @@ private:
 	vk::Format swapchainFormat;
 	vk::Extent2D swapchainExtent;
 
-	vk::PipelineLayout pipelineLayout;
-	vk::RenderPass renderPass;
-	vk::Pipeline pipeline;
+	std::vector<PipelineTypes> pipelinesTypess = { {PipelineTypes::SKY, PipelineTypes::STANDARD} };
+	vk::PipelineLayout pipelineLayouts;
+	vk::RenderPass renderPasses;
+	vk::Pipeline pipelines;
 
 	vk::CommandPool commandPool;
 	vk::CommandBuffer mainCommandBuffer;
@@ -57,10 +58,10 @@ private:
 	uint32_t maxFramesInFlight, frameNumber;
 	uint32_t imageIndex;
 
-	vk::DescriptorSetLayout frameSetLayout;
+	std::unordered_map<PipelineTypes, vk::DescriptorSetLayout> frameSetLayout;
 	vk::DescriptorPool frameDescriptorPool;
 
-	vk::DescriptorSetLayout meshSetLayout;
+	std::unordered_map<PipelineTypes, vk::DescriptorSetLayout> meshSetLayout;
 	vk::DescriptorPool meshDescriptorPool;
 
 

@@ -20,4 +20,9 @@ enum class meshTypes {
 	SKULL
 };
 
+enum class PipelineTypes {
+	SKY,
+	STANDARD
+};
+
 std::vector<std::string> split(std::string line, std::string delimiter);

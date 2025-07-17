@@ -10,6 +10,7 @@
 #include "render_structs.h"
 #include "descriptor.h"
 #include "obj_mesh.h"
+#include "mesh.h"
 
 
 
@@ -113,7 +114,7 @@ void Engine::create_descriptor_set_layouts()
 	bindings.counts.push_back(1);
 	bindings.stages.push_back(vk::ShaderStageFlagBits::eVertex);
 
-	frameSetLayout = vkInit::create_descriptor_set_layout(device, bindings);
+	frameSetLayout[PipelineTypes::STANDARD] = vkInit::create_descriptor_set_layout(device, bindings);
 
 	bindings.count = 1;
 
@@ -130,12 +131,29 @@ void Engine::create_descriptor_set_layouts()
 	bindings.stages.push_back(vk::ShaderStageFlagBits::eFragment);
 
 
-	meshSetLayout = vkInit::create_descriptor_set_layout(device, bindings);
+	meshSetLayout[PipelineTypes::STANDARD] = vkInit::create_descriptor_set_layout(device, bindings);
 }
 
 void Engine::create_pipeline()
 {
-	vkInit::GraphicsPipelineInBundle specification = {};
+	vkInit::PipelineBuilder pipelineBuilder(device);
+	pipelineBuilder.specify_vertex_format(vkMesh::getPosColorBindingDescriptions(), vkMesh::getPosColorAttributeDescriptions());
+	pipelineBuilder.specify_vertex_shader("Shaders/vertex.spv");
+	pipelineBuilder.specify_fragment_shader("Shaders/fragment.spv");
+	pipelineBuilder.specify_swapchain_extent(swapchainExtent);
+	pipelineBuilder.specify_depth_attachment(swapchainFrames[0].depthFormat, 1);
+	pipelineBuilder.addDescriptorsetLayout(frameSetLayout[PipelineTypes::STANDARD]);
+	pipelineBuilder.addDescriptorsetLayout(meshSetLayout[PipelineTypes::STANDARD]);
+	pipelineBuilder.addColorAttachment(swapchainFormat, 0);
+
+	vkInit::GraphicsPipelineOutBundle output = pipelineBuilder.build();
+	pipelineLayouts = output.layout;
+	renderPasses = output.renderpass;
+	pipelines = output.pipeline;
+	
+
+
+	/*vkInit::GraphicsPipelineInBundle specification = {};
 
 	specification.device = device;
 	specification.vertexFilePath = "Shaders/vertex.spv";
@@ -148,7 +166,7 @@ void Engine::create_pipeline()
 	auto output = vkInit::create_graphics_pipeline(specification);
 	pipelineLayout = output.layout;
 	renderPass = output.renderpass;
-	pipeline = output.pipeline;
+	pipeline = output.pipeline;*/
 }
 
 void Engine::finalize_setup()
@@ -169,7 +187,7 @@ void Engine::create_framebuffers()
 {
 	vkInit::frameBufferInput frameBufferInput;
 	frameBufferInput.device = device;
-	frameBufferInput.renderpass = renderPass;
+	frameBufferInput.renderpass = renderPasses;
 	frameBufferInput.swapchainExtent = swapchainExtent;
 
 	vkInit::make_framebuffers(frameBufferInput, swapchainFrames);
@@ -191,7 +209,7 @@ void Engine::create_frame_resources()
 		frame.renderFinished = vkInit::make_semaphore(device);
 
 		frame.create_descriptor_resources();
-		frame.descriptorSet = vkInit::allocate_descriptor_set(device, frameDescriptorPool, frameSetLayout);
+		frame.descriptorSet = vkInit::allocate_descriptor_set(device, frameDescriptorPool, frameSetLayout[PipelineTypes::STANDARD]);
 	}
 }
 
@@ -234,7 +252,7 @@ void Engine::create_assets()
 	textureInfo.device = device;
 	textureInfo.queue = graphicsQueue;
 	textureInfo.physicalDevice = physicalDevice;
-	textureInfo.layout = meshSetLayout; // TODO: change later!!
+	textureInfo.layout = meshSetLayout[PipelineTypes::STANDARD]; // TODO: change later!!
 	textureInfo.descriptorPool = meshDescriptorPool; // TODO: change later!!
 
 	for (const auto& [object, filename] : filenames) {
@@ -285,7 +303,7 @@ void Engine::render_objects(vk::CommandBuffer commandBuffer, meshTypes objectTyp
 {
 	int indexCount = meshes->indexCounts.find(objectType)->second;
 	int firstIndex = meshes->firstIndices.find(objectType)->second;
-	materials[objectType]->use(commandBuffer, pipelineLayout);
+	materials[objectType]->use(commandBuffer, pipelineLayouts);
 	commandBuffer.drawIndexed(indexCount, instanceCount, firstIndex, 0, startInstance);
 	startInstance += instanceCount;
 }
@@ -298,7 +316,7 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 	catch (vk::SystemError err) { if (debugMode) std::cout << "Failed to begin recording command buffer" << std::endl; }
 
 	vk::RenderPassBeginInfo renderPassInfo = {};
-	renderPassInfo.renderPass = renderPass;
+	renderPassInfo.renderPass = renderPasses;
 	renderPassInfo.framebuffer = swapchainFrames[imageIndex].framebuffer;
 	renderPassInfo.renderArea.offset.x = 0;
 	renderPassInfo.renderArea.offset.y = 0;
@@ -323,8 +341,8 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 
 	commandBuffer.beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 
-	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, swapchainFrames[imageIndex].descriptorSet, nullptr);
-	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayouts, 0, swapchainFrames[imageIndex].descriptorSet, nullptr);
+	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines);
 
 	prepare_scene(commandBuffer);
 
@@ -350,8 +368,8 @@ void Engine::cleanup_swapchain()
 
 }
 
-Engine::~Engine() {
-
+Engine::~Engine() 
+{
 
 	device.waitIdle();
 	if (debugMode) { std::cout << "Goodbye see you!\n"; }
@@ -364,16 +382,16 @@ Engine::~Engine() {
 	// delete textures
 	for (auto& [key, texture] : materials) texture = nullptr;
 	
-
 	device.destroyCommandPool(commandPool);
 
-	device.destroyRenderPass(renderPass);
-	device.destroyPipeline(pipeline);
-	device.destroyPipelineLayout(pipelineLayout);
+	device.destroyRenderPass(renderPasses);
+	device.destroyPipeline(pipelines);
+	device.destroyPipelineLayout(pipelineLayouts);
 	
 	cleanup_swapchain();
-	device.destroyDescriptorSetLayout(frameSetLayout);
-	device.destroyDescriptorSetLayout(meshSetLayout);
+	
+	device.destroyDescriptorSetLayout(frameSetLayout[PipelineTypes::STANDARD]);
+	device.destroyDescriptorSetLayout(meshSetLayout[PipelineTypes::STANDARD]);
 	
 	device.destroyDescriptorPool(meshDescriptorPool);
 	device.destroy();

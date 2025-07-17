@@ -158,6 +158,9 @@
     <ClCompile Include="obj_mesh.cpp">
       <Filter>main</Filter>
     </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

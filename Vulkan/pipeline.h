@@ -17,31 +17,83 @@ namespace vkInit {
 		vk::RenderPass& renderpass;
 		vk::Pipeline& pipeline;
 	};
-	
 
-	vk::PipelineLayout create_pipeline_layout(const vk::Device& device, std::vector<vk::DescriptorSetLayout> descriptorSetLayouts);
+	class PipelineBuilder {
+	public:
+		PipelineBuilder(vk::Device device);
 
-	vk::RenderPass create_renderpass(const vk::Device& device, const vk::Format& swapchainImageFormat, const vk::Format& depthFormat);
+		void reset();
 
-	vk::PipelineVertexInputStateCreateInfo create_vertex_input_info(const std::vector<vk::VertexInputBindingDescription>& bindingDescription, const std::vector<vk::VertexInputAttributeDescription>& attributeDescriptions);
-	vk::PipelineInputAssemblyStateCreateInfo create_input_assembly_info();
-	vk::PipelineShaderStageCreateInfo create_shader_info(const vk::ShaderModule& shaderModule, const vk::ShaderStageFlagBits& stage);
-	vk::Viewport create_viewport(const GraphicsPipelineInBundle& specification);
-	vk::Rect2D create_scissor(const GraphicsPipelineInBundle& specification);
-	vk::PipelineViewportStateCreateInfo create_viewport_state(const vk::Viewport& viewport, const vk::Rect2D& scissor);
-	vk::PipelineRasterizationStateCreateInfo create_rasterizer_info();
-	vk::PipelineMultisampleStateCreateInfo create_multisampling_info();
-	vk::PipelineColorBlendAttachmentState create_color_blend_attachment_state();
-	vk::PipelineColorBlendStateCreateInfo create_color_blend_attachment_stage(const vk::PipelineColorBlendAttachmentState& colorBlendAttachment);
-	
-	vk::PushConstantRange create_push_constant_info();
-	vk::AttachmentDescription create_color_attachment(const vk::Format& swapchainImageFormat);
-	vk::AttachmentDescription create_depth_attachment(const vk::Format& depthFormat);
-	vk::AttachmentReference create_color_attachment_reference();
-	vk::AttachmentReference create_depth_attachment_reference();
-	vk::SubpassDescription create_subpass(const std::vector<vk::AttachmentReference>& attachmentRefs);
-	vk::RenderPassCreateInfo create_renderpass_info(const std::vector<vk::AttachmentDescription>& attachements, const vk::SubpassDescription subpass);
+		void specify_vertex_format(std::vector<vk::VertexInputBindingDescription> bindingDescription, std::vector<vk::VertexInputAttributeDescription> attributeDescriptions);
+		void specify_vertex_shader(const char* filename);
+		void specify_fragment_shader(const char* filename);
+		void specify_swapchain_extent(vk::Extent2D screen_size);
+		void specify_depth_attachment(const vk::Format& depthFormat, uint32_t attachment_index);
+		void clearDepthAttachment();
+		void addColorAttachment(const vk::Format& format, uint32_t attachment_index);
 
 
-	GraphicsPipelineOutBundle create_graphics_pipeline(const GraphicsPipelineInBundle& specification);
+		GraphicsPipelineOutBundle build();
+
+		void addDescriptorsetLayout(vk::DescriptorSetLayout descriptorSetLayout);
+		void resetDescriptorsetLayouts();
+
+	private:
+		vk::Device device;
+		vk::GraphicsPipelineCreateInfo pipelineInfo = {};
+
+		std::vector<vk::VertexInputBindingDescription> bindingDescriptions;
+		std::vector<vk::VertexInputAttributeDescription> attributeDescriptions;
+		vk::PipelineVertexInputStateCreateInfo vertexInputInfo = {};
+		vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo = {};
+
+		std::vector<vk::PipelineShaderStageCreateInfo> shaderStages;
+		vk::ShaderModule vertexShader = nullptr, fragmentShader = nullptr;
+		vk::PipelineShaderStageCreateInfo vertexShaderInfo, fragmentShaderInfo;
+
+		vk::Extent2D swapchainExtent;
+		vk::Viewport viewport = {};
+		vk::Rect2D scissor = {};
+		vk::PipelineViewportStateCreateInfo viewportState = {};
+		vk::PipelineRasterizationStateCreateInfo rasterizer = {};
+
+		vk::PipelineDepthStencilStateCreateInfo depthState;
+		std::unordered_map<uint32_t, vk::AttachmentDescription> attachmentDescriptions;
+		std::unordered_map<uint32_t, vk::AttachmentReference> attachmentReferences;
+		std::vector<vk::AttachmentDescription> flattenedAttachmentDescriptions;
+		std::vector<vk::AttachmentReference> flattenedAttachmentReferences;
+
+		vk::PipelineMultisampleStateCreateInfo multisampling = {};
+
+		vk::PipelineColorBlendAttachmentState colorBlendAttachment = {};
+		vk::PipelineColorBlendStateCreateInfo colorBlending = {};
+
+		std::vector<vk::DescriptorSetLayout> descriptorSetLayouts;
+		void resetVertexFormat();
+		void resetShaderModules();
+		void resetRenderpassAttachments();
+
+		vk::AttachmentDescription createRenderpassAttachment(const vk::Format& format, vk::ImageLayout finalLayout);
+		vk::AttachmentReference createAttachmentReference(uint32_t attachment_index, vk::ImageLayout layout);
+
+		void configureInputAssembly();
+
+		vk::PipelineShaderStageCreateInfo createShaderInfo(const vk::ShaderModule& shaderModule, const vk::ShaderStageFlagBits& stage);
+		vk::PipelineViewportStateCreateInfo createViewportState();
+
+		void configureRasterization();
+		void configureMultisampling();
+		void configureColorBlending();
+
+		vk::PipelineLayout createPipelineLayout();
+
+		vk::RenderPass createRenderpass();
+
+		vk::SubpassDescription createSubpass(const std::vector<vk::AttachmentReference>& attachments);
+
+		vk::RenderPassCreateInfo createRenderpassInfo(
+			const std::vector<vk::AttachmentDescription>& attachments,
+			const vk::SubpassDescription& subpass
+		);
+	};
 }
