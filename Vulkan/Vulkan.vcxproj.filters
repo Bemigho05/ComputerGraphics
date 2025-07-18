@@ -149,17 +149,17 @@
     <ClCompile Include="vertex_managerie.cpp">
       <Filter>model</Filter>
     </ClCompile>
-    <ClCompile Include="config.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
     <ClCompile Include="queue_families.cpp">
       <Filter>vkUtil</Filter>
     </ClCompile>
-    <ClCompile Include="obj_mesh.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="obj_mesh.cpp">
+      <Filter>vkMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

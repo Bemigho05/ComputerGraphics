@@ -147,9 +147,9 @@ void Engine::create_pipeline()
 	pipelineBuilder.addColorAttachment(swapchainFormat, 0);
 
 	vkInit::GraphicsPipelineOutBundle output = pipelineBuilder.build();
-	pipelineLayouts = output.layout;
-	renderPasses = output.renderpass;
-	pipelines = output.pipeline;
+	pipelineLayouts[PipelineTypes::STANDARD] = output.layout;
+	renderPasses[PipelineTypes::STANDARD] = output.renderpass;
+	pipelines[PipelineTypes::STANDARD] = output.pipeline;
 	
 
 
@@ -187,7 +187,7 @@ void Engine::create_framebuffers()
 {
 	vkInit::frameBufferInput frameBufferInput;
 	frameBufferInput.device = device;
-	frameBufferInput.renderpass = renderPasses;
+	frameBufferInput.renderpass = renderPasses[PipelineTypes::STANDARD];
 	frameBufferInput.swapchainExtent = swapchainExtent;
 
 	vkInit::make_framebuffers(frameBufferInput, swapchainFrames);
@@ -303,7 +303,7 @@ void Engine::render_objects(vk::CommandBuffer commandBuffer, meshTypes objectTyp
 {
 	int indexCount = meshes->indexCounts.find(objectType)->second;
 	int firstIndex = meshes->firstIndices.find(objectType)->second;
-	materials[objectType]->use(commandBuffer, pipelineLayouts);
+	materials[objectType]->use(commandBuffer, pipelineLayouts[PipelineTypes::STANDARD]);
 	commandBuffer.drawIndexed(indexCount, instanceCount, firstIndex, 0, startInstance);
 	startInstance += instanceCount;
 }
@@ -316,7 +316,7 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 	catch (vk::SystemError err) { if (debugMode) std::cout << "Failed to begin recording command buffer" << std::endl; }
 
 	vk::RenderPassBeginInfo renderPassInfo = {};
-	renderPassInfo.renderPass = renderPasses;
+	renderPassInfo.renderPass = renderPasses[PipelineTypes::STANDARD];
 	renderPassInfo.framebuffer = swapchainFrames[imageIndex].framebuffer;
 	renderPassInfo.renderArea.offset.x = 0;
 	renderPassInfo.renderArea.offset.y = 0;
@@ -341,8 +341,8 @@ void Engine::record_draw_commands(vk::CommandBuffer commandBuffer, uint32_t imag
 
 	commandBuffer.beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 
-	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayouts, 0, swapchainFrames[imageIndex].descriptorSet, nullptr);
-	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines);
+	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipelineLayouts[PipelineTypes::STANDARD], 0, swapchainFrames[imageIndex].descriptorSet, nullptr);
+	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines[PipelineTypes::STANDARD]);
 
 	prepare_scene(commandBuffer);
 
@@ -384,9 +384,9 @@ Engine::~Engine()
 	
 	device.destroyCommandPool(commandPool);
 
-	device.destroyRenderPass(renderPasses);
-	device.destroyPipeline(pipelines);
-	device.destroyPipelineLayout(pipelineLayouts);
+	device.destroyRenderPass(renderPasses[PipelineTypes::STANDARD]);
+	device.destroyPipeline(pipelines[PipelineTypes::STANDARD]);
+	device.destroyPipelineLayout(pipelineLayouts[PipelineTypes::STANDARD]);
 	
 	cleanup_swapchain();
 	

@@ -13,9 +13,9 @@ namespace vkInit {
 	};
 
 	struct GraphicsPipelineOutBundle {
-		vk::PipelineLayout& layout;
-		vk::RenderPass& renderpass;
-		vk::Pipeline& pipeline;
+		vk::PipelineLayout layout;
+		vk::RenderPass renderpass;
+		vk::Pipeline pipeline;
 	};
 
 	class PipelineBuilder {
@@ -86,14 +86,8 @@ namespace vkInit {
 		void configureColorBlending();
 
 		vk::PipelineLayout createPipelineLayout();
-
 		vk::RenderPass createRenderpass();
-
 		vk::SubpassDescription createSubpass(const std::vector<vk::AttachmentReference>& attachments);
-
-		vk::RenderPassCreateInfo createRenderpassInfo(
-			const std::vector<vk::AttachmentDescription>& attachments,
-			const vk::SubpassDescription& subpass
-		);
+		vk::RenderPassCreateInfo createRenderpassInfo(const std::vector<vk::AttachmentDescription>& attachments,const vk::SubpassDescription& subpass);
 	};
 }

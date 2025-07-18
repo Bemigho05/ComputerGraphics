@@ -45,9 +45,9 @@ private:
 	vk::Extent2D swapchainExtent;
 
 	std::vector<PipelineTypes> pipelinesTypess = { {PipelineTypes::SKY, PipelineTypes::STANDARD} };
-	vk::PipelineLayout pipelineLayouts;
-	vk::RenderPass renderPasses;
-	vk::Pipeline pipelines;
+	std::unordered_map<PipelineTypes, vk::PipelineLayout> pipelineLayouts;
+	std::unordered_map < PipelineTypes, vk::RenderPass> renderPasses;
+	std::unordered_map < PipelineTypes, vk::Pipeline> pipelines;
 
 	vk::CommandPool commandPool;
 	vk::CommandBuffer mainCommandBuffer;

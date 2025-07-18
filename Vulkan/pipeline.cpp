@@ -142,6 +142,7 @@ vk::PipelineLayout vkInit::PipelineBuilder::createPipelineLayout()
 #ifndef NDEBUG
 		std::cerr << "Failed to create pipeline layout!" << std::endl;
 #endif
+		return nullptr;
 	}
 }
 
@@ -170,6 +171,7 @@ vk::RenderPass vkInit::PipelineBuilder::createRenderpass()
 #ifndef NDEBUG
 		std::cerr << "Failed to create renderpass!";
 #endif // !NDEBUG
+		return nullptr;
 	}
 }
 
@@ -260,7 +262,7 @@ void vkInit::PipelineBuilder::specify_swapchain_extent(vk::Extent2D screen_size)
 	swapchainExtent = screen_size;
 }
 
-void vkInit::PipelineBuilder::specify_depth_attachment(const vk::Format& depthFormat, uint32_t attachment_index)
+void vkInit::PipelineBuilder::specify_depth_attachment(const vk::Format& depthFormat, uint32_t attachmentIndex)
 {
 	depthState.flags = vk::PipelineDepthStencilStateCreateFlags();
 	depthState.depthTestEnable = true;
@@ -270,8 +272,8 @@ void vkInit::PipelineBuilder::specify_depth_attachment(const vk::Format& depthFo
 	depthState.stencilTestEnable = false;
 
 	pipelineInfo.pDepthStencilState = &depthState;
-	attachmentDescriptions.insert({ attachment_index, createRenderpassAttachment(depthFormat, vk::ImageLayout::eDepthStencilAttachmentOptimal) });
-	attachmentReferences.insert({ attachment_index, createAttachmentReference(attachment_index, vk::ImageLayout::eDepthStencilAttachmentOptimal) });
+	attachmentDescriptions.insert({ attachmentIndex, createRenderpassAttachment(depthFormat, vk::ImageLayout::eDepthStencilAttachmentOptimal) });
+	attachmentReferences.insert({ attachmentIndex, createAttachmentReference(attachmentIndex, vk::ImageLayout::eDepthStencilAttachmentOptimal) });
 }
 
 void vkInit::PipelineBuilder::clearDepthAttachment()
@@ -279,10 +281,10 @@ void vkInit::PipelineBuilder::clearDepthAttachment()
 	pipelineInfo.pDepthStencilState = nullptr;
 }
 
-void vkInit::PipelineBuilder::addColorAttachment(const vk::Format& format, uint32_t attachment_index)
+void vkInit::PipelineBuilder::addColorAttachment(const vk::Format& format, uint32_t attachmentIndex)
 {
-	attachmentDescriptions.insert({ attachment_index, createRenderpassAttachment(format, vk::ImageLayout::ePresentSrcKHR) });
-	attachmentReferences.insert({ attachment_index, createAttachmentReference(attachment_index, vk::ImageLayout::eColorAttachmentOptimal) });
+	attachmentDescriptions.insert({ attachmentIndex, createRenderpassAttachment(format, vk::ImageLayout::ePresentSrcKHR) });
+	attachmentReferences.insert({ attachmentIndex, createAttachmentReference(attachmentIndex, vk::ImageLayout::eColorAttachmentOptimal) });
 }
 
 vkInit::GraphicsPipelineOutBundle vkInit::PipelineBuilder::build()
@@ -330,7 +332,7 @@ vkInit::GraphicsPipelineOutBundle vkInit::PipelineBuilder::build()
 	resetShaderModules();
 	
 	GraphicsPipelineOutBundle output = { pipelineLayout, renderpass, grahicsPipeline };
-
+	
 	return output;
 }
 
